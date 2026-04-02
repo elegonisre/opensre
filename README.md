@@ -37,13 +37,15 @@ When something breaks in production, the pressure is immediate, but the evidence
 
 OpenSRE is the open-source answer to that chaos. It's an AI SRE agent that correlates signals across your entire stack, reasons through root cause, and surfaces a clear diagnosis - in the time it used to take just to _find_ the right dashboard.
 
-Unlike closed SRE platforms, OpenSRE is **fully open source and self-hostable**. No vendor lock-in. No black-box reasoning. You own the agent, the data, and the workflow.
+Unlike closed SRE platforms, OpenSRE is **fully open source and self-hostable**. No vendor lock-in and no black-box reasoning. You own the agent, the data, and the workflow.
 
 > Whether you're an SRE triaging a P0, a platform engineer building internal tooling, a developer who just got paged, or an EM trying to reduce MTTR - OpenSRE works for your whole team.
 
-SWE-bench<sup>1</sup> gave coding agents scalable training data and clear feedback. Production incident response still has no equivalent. Distributed failures are slower, noisier, and harder to simulate and evaluate than local code tasks, which is why AI SRE, and AI for production debugging more broadly, remains unsolved.
+SWE-bench<sup>1</sup> gave coding agents scalable training data and clear feedback. Production incident response still has no equivalent. 
 
-OpenSRE is building that missing layer:
+Distributed failures are slower, noisier, and harder to simulate and evaluate than local code tasks, which is why AI SRE, and AI for production debugging more broadly, remains unsolved.
+
+OpenSRE is building _that_ missing layer:
 
 > an open reinforcement learning environment for infrastructure incident response, with end-to-end tests and synthetic incident simulations for realistic production failures
 
