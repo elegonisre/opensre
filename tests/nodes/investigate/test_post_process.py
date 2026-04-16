@@ -49,6 +49,17 @@ from app.nodes.investigate.processing.post_process import merge_evidence
                 "namespace": "default"
             },
             ["eks_pod_logs", "eks_pod_logs_pod_name", "eks_pod_logs_namespace"]
+        ),
+        (
+            "get_eks_deployment_status",
+            {
+                "deployment_name": "api",
+                "desired_replicas": 3,
+                "ready_replicas": 3,
+                "unavailable_replicas": 0,
+                "conditions": []
+            },
+            ["eks_deployment_status"]
         )
     ]
 )
@@ -58,3 +69,21 @@ def test_merge_evidence_eks_tools(action_name, data, expected_keys):
 
     for key in expected_keys:
         assert key in evidence
+        
+    # Validate the data content itself
+    if action_name == "list_eks_pods":
+        assert evidence["eks_pods"][0]["name"] == "fake-pod-1"
+        assert evidence["eks_failing_pods"][0]["name"] == "fake-pod-2"
+    elif action_name == "get_eks_events":
+        assert evidence["eks_events"][0]["message"] == "Back-off restarting failed container"
+    elif action_name == "list_eks_deployments":
+        assert evidence["eks_deployments"][0]["name"] == "api"
+    elif action_name == "get_eks_node_health":
+        assert evidence["eks_node_health"][0]["name"] == "ip-10-0-0-1.ec2.internal"
+        assert evidence["eks_not_ready_count"] == 0
+    elif action_name == "get_eks_pod_logs":
+        assert evidence["eks_pod_logs"] == "Error: Connection refused..."
+        assert evidence["eks_pod_logs_pod_name"] == "fake-pod-1"
+    elif action_name == "get_eks_deployment_status":
+        assert evidence["eks_deployment_status"]["deployment_name"] == "api"
+        assert evidence["eks_deployment_status"]["ready_replicas"] == 3
