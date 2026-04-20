@@ -74,8 +74,11 @@ class Graph:
     def topological_order(self) -> List[str]:
         """Return node names in a valid topological execution order.
 
+        Uses Kahn's algorithm for topological sorting.
+
         Raises:
             RuntimeError: If a cycle is detected in the graph.
+            KeyError: If a declared dependency is not registered.
         """
         in_degree: Dict[str, int] = {name: 0 for name in self._nodes}
         for node in self._nodes.values():
@@ -86,45 +89,3 @@ class Graph:
 
         queue = [name for name, deg in in_degree.items() if deg == 0]
         order: List[str] = []
-        visited: Set[str] = set()
-
-        while queue:
-            current = queue.pop(0)
-            order.append(current)
-            visited.add(current)
-            for dependent in self._adj.get(current, []):
-                in_degree[dependent] -= 1
-                if in_degree[dependent] == 0:
-                    queue.append(dependent)
-
-        if len(order) != len(self._nodes):
-            cycle_nodes = set(self._nodes) - visited
-            raise RuntimeError(f"Cycle detected in graph '{self.name}' involving nodes: {cycle_nodes}")
-
-        return order
-
-    def execute(self, context: Optional[Dict[str, Any]] = None) -> Dict[str, Any]:
-        """Execute all nodes in topological order, accumulating results.
-
-        Args:
-            context: Initial context dict passed to each node.
-
-        Returns:
-            A dict mapping node names to their execution results.
-        """
-        ctx: Dict[str, Any] = context or {}
-        results: Dict[str, Any] = {}
-
-        for node_name in self.topological_order():
-            node = self._nodes[node_name]
-            result = node.run(ctx)
-            results[node_name] = result
-            ctx[node_name] = result  # make result available to downstream nodes
-
-        return results
-
-    def __len__(self) -> int:
-        return len(self._nodes)
-
-    def __repr__(self) -> str:
-        return f"Graph(name={self.name!r}, nodes={list(self._nodes)})"
