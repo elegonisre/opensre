@@ -87,5 +87,26 @@ class Graph:
                     raise KeyError(f"Dependency '{dep}' of node '{node.name}' is not registered.")
                 in_degree[node.name] += 1
 
-        queue = [name for name, deg in in_degree.items() if deg == 0]
+        # Start with all nodes that have no dependencies
+        queue: List[str] = sorted(
+            [name for name, deg in in_degree.items() if deg == 0]
+        )  # sorted for deterministic ordering
         order: List[str] = []
+
+        while queue:
+            # Pop from the front to preserve breadth-first ordering
+            current = queue.pop(0)
+            order.append(current)
+            for dependent in self._adj.get(current, []):
+                in_degree[dependent] -= 1
+                if in_degree[dependent] == 0:
+                    queue.append(dependent)
+                    queue.sort()  # keep deterministic order as we add new candidates
+
+        if len(order) != len(self._nodes):
+            raise RuntimeError(
+                f"Cycle detected in graph '{self.name}'. "
+                "Topological sort could not complete."
+            )
+
+        return order
