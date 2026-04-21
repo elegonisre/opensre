@@ -88,19 +88,18 @@ class Graph:
                 in_degree[node.name] += 1
 
         # Start with all nodes that have no dependencies
-        queue: List[str] = sorted(
-            [name for name, deg in in_degree.items() if deg == 0]
-        )  # sorted for deterministic ordering
+        queue: List[str] = [name for name, deg in in_degree.items() if deg == 0]
+        # Sort queue for deterministic ordering, which makes debugging much easier
+        queue.sort()
         order: List[str] = []
 
         while queue:
             current = queue.pop(0)
             order.append(current)
-            for dependent in self._adj[current]:
+            for dependent in sorted(self._adj[current]):
                 in_degree[dependent] -= 1
                 if in_degree[dependent] == 0:
                     queue.append(dependent)
-                    queue.sort()  # maintain deterministic order
 
         if len(order) != len(self._nodes):
             raise RuntimeError(
