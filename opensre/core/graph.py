@@ -88,23 +88,24 @@ class Graph:
                 in_degree[node.name] += 1
 
         # Start with all nodes that have no dependencies
-        queue: List[str] = [name for name, deg in in_degree.items() if deg == 0]
-        # Sort for deterministic ordering when multiple nodes have the same in-degree
-        queue.sort()
+        queue: List[str] = sorted(
+            [name for name, deg in in_degree.items() if deg == 0]
+        )  # sorted for deterministic ordering
         order: List[str] = []
 
         while queue:
             current = queue.pop(0)
             order.append(current)
-            for dependent in sorted(self._adj[current]):
+            for dependent in self._adj[current]:
                 in_degree[dependent] -= 1
                 if in_degree[dependent] == 0:
                     queue.append(dependent)
+                    queue.sort()  # maintain deterministic order
 
         if len(order) != len(self._nodes):
             raise RuntimeError(
                 f"Cycle detected in graph '{self.name}'. "
-                "Topological ordering is not possible."
+                "Topological sort could not complete."
             )
 
         return order
