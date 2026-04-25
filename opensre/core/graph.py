@@ -89,7 +89,7 @@ class Graph:
 
         # Start with all nodes that have no dependencies
         queue: List[str] = [name for name, deg in in_degree.items() if deg == 0]
-        # Sort queue for deterministic ordering when multiple roots exist
+        # Sort for deterministic ordering when multiple roots exist
         queue.sort()
         order: List[str] = []
 
@@ -103,8 +103,7 @@ class Graph:
 
         if len(order) != len(self._nodes):
             raise RuntimeError(
-                f"Cycle detected in graph '{self.name}'. "
-                "Topological ordering is not possible."
+                f"Cycle detected in graph '{self.name}': could not resolve execution order."
             )
 
         return order
