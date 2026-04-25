@@ -89,7 +89,7 @@ class Graph:
 
         # Start with all nodes that have no dependencies
         queue: List[str] = [name for name, deg in in_degree.items() if deg == 0]
-        # Sort for deterministic ordering when multiple roots exist
+        # Sort for deterministic ordering when multiple nodes have in-degree 0
         queue.sort()
         order: List[str] = []
 
